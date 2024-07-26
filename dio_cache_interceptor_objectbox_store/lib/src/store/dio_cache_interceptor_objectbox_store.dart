@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_objectbox_store/objectbox.g.dart';
 
@@ -238,6 +240,7 @@ class CacheResponseBox {
           responseDate.subtract(
             const Duration(milliseconds: 150),
           ),
+      codec: latin1,
     );
   }
 
