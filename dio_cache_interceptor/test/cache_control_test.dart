@@ -28,6 +28,7 @@ void main() {
       requestDate: rqRespDate.subtract(const Duration(milliseconds: 50)),
       responseDate: rqRespDate,
       url: 'https://foo.com',
+      codec: utf8,
     );
   }
 

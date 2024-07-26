@@ -1,3 +1,5 @@
+import 'dart:convert' show Codec, utf8;
+
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
@@ -83,6 +85,11 @@ class CacheOptions {
   // UUID helper to mark requests
   static final _uuid = Uuid();
 
+  /// Codec used to serialize/deserialize content
+  ///
+  /// Default is [utf8]
+  final Codec codec;
+
   const CacheOptions({
     this.policy = CachePolicy.request,
     this.hitCacheOnErrorExcept,
@@ -91,6 +98,7 @@ class CacheOptions {
     this.priority = CachePriority.normal,
     this.cipher,
     this.allowPostMethod = false,
+    this.codec = utf8,
     required this.store,
   });
 
@@ -119,6 +127,7 @@ class CacheOptions {
     CacheStore? store,
     Nullable<CacheCipher>? cipher,
     bool? allowPostMethod,
+    Codec? codec,
   }) {
     return CacheOptions(
       policy: policy ?? this.policy,
@@ -131,6 +140,7 @@ class CacheOptions {
       store: store ?? this.store,
       cipher: cipher != null ? cipher.value : this.cipher,
       allowPostMethod: allowPostMethod ?? this.allowPostMethod,
+      codec: codec ?? this.codec,
     );
   }
 }

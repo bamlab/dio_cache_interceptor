@@ -62,8 +62,6 @@ class CacheResponse {
   final String url;
 
   /// Codec used to serialize/deserialize content
-  ///
-  /// Default is [utf8]
   final Codec codec;
 
   CacheResponse({
@@ -80,7 +78,7 @@ class CacheResponse {
     required this.requestDate,
     required this.responseDate,
     required this.url,
-    this.codec = utf8,
+    required this.codec,
   });
 
   Response toResponse(RequestOptions options, {bool fromNetwork = false}) {
@@ -244,6 +242,7 @@ class CacheResponse {
       requestDate: response.requestOptions.extra[CacheResponse.requestSentDate],
       responseDate: DateTime.now().toUtc(),
       url: response.requestOptions.uri.toString(),
+      codec: options.codec,
     );
   }
 
@@ -295,6 +294,7 @@ class CacheResponse {
     DateTime? requestDate,
     DateTime? responseDate,
     String? url,
+    Codec? codec,
   }) {
     return CacheResponse(
       cacheControl: cacheControl ?? this.cacheControl,
@@ -310,6 +310,7 @@ class CacheResponse {
       requestDate: requestDate ?? this.requestDate,
       responseDate: responseDate ?? this.responseDate,
       url: url ?? this.url,
+      codec: codec ?? this.codec,
     );
   }
 }

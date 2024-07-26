@@ -32,6 +32,7 @@ Future<void> _addFooResponse(
     requestDate: DateTime.now().subtract(const Duration(milliseconds: 50)),
     responseDate: DateTime.now(),
     url: url,
+    codec: utf8,
   );
 
   return store.set(resp);
