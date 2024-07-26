@@ -1,8 +1,7 @@
-import 'dart:convert' show jsonDecode, jsonEncode, utf8;
+import 'dart:convert' show Codec, jsonDecode, jsonEncode, utf8;
 import 'dart:math';
 
 import 'package:dio/dio.dart';
-
 import 'package:dio_cache_interceptor/src/model/cache_cipher.dart';
 import 'package:dio_cache_interceptor/src/model/cache_control.dart';
 import 'package:dio_cache_interceptor/src/model/cache_options.dart';
@@ -62,6 +61,11 @@ class CacheResponse {
   /// Initial request URL
   final String url;
 
+  /// Codec used to serialize/deserialize content
+  ///
+  /// Default is [utf8]
+  final Codec codec;
+
   CacheResponse({
     required this.cacheControl,
     required this.content,
@@ -76,11 +80,12 @@ class CacheResponse {
     required this.requestDate,
     required this.responseDate,
     required this.url,
+    this.codec = utf8,
   });
 
   Response toResponse(RequestOptions options, {bool fromNetwork = false}) {
     return Response(
-      data: deserializeContent(options.responseType, content),
+      data: deserializeContent(options.responseType, content, codec),
       extra: {cacheKey: key, CacheResponse.fromNetwork: fromNetwork},
       headers: getHeaders(),
       statusCode: 304,
@@ -93,7 +98,7 @@ class CacheResponse {
     final h = Headers();
 
     if (checkedHeaders != null) {
-      final map = jsonDecode(utf8.decode(checkedHeaders));
+      final map = jsonDecode(codec.decode(checkedHeaders));
       map.forEach((key, value) => h.set(key, value));
     }
 
@@ -260,11 +265,12 @@ class CacheResponse {
           await serializeContent(
             response.requestOptions.responseType,
             response.data,
+            codec,
           ),
         ),
         headers: await CacheCipher.encryptContent(
           options,
-          utf8.encode(jsonEncode(response.headers.map)),
+          codec.encode(jsonEncode(response.headers.map)),
         ),
       );
     }
